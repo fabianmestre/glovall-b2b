@@ -1,0 +1,6 @@
+{
+  "name": "Glovall - Baseball Academy SaaS",
+  "description": "Plataforma B2B SportsTech para directores de academias de béisbol, entrenadores, scouts de MLB y prospectos con gestión de roster, RBAC, Baseball IQ, análisis biomecánico y Scout Book Generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
