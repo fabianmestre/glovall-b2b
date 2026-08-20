@@ -3,6 +3,8 @@ import {
   Activity,
   AlertCircle,
   Award,
+  BookOpen,
+  Brain,
   Building2,
   Calendar,
   CheckCircle2,
@@ -28,6 +30,7 @@ import {
   UserCheck,
   UserPlus,
   Users,
+  Video,
   Zap,
 } from 'lucide-react';
 import { COACHES_STAFF, INITIAL_PLAYER_INVITATIONS, SHOWCASE_EVENTS } from '../data/mockData';
@@ -64,6 +67,17 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   const class2028 = players.filter((p) => p.signingClass === '2028');
   const class2029 = players.filter((p) => p.signingClass === '2029');
 
+  // Glovall average score across roster
+  const avgGlovallScore = Math.round(
+    players.reduce((acc, p) => acc + (p.glovallScore || 85), 0) / (players.length || 1)
+  );
+
+  // Studio & Baseball IQ averages
+  const avgBaseballIq = Math.round(
+    players.reduce((acc, p) => acc + (p.edTech?.baseballIqScore || 88), 0) / (players.length || 1)
+  );
+  const totalStudyHours = players.reduce((acc, p, idx) => acc + (14 + idx * 2.5), 0).toFixed(0);
+
   const topProspects = [...players].sort((a, b) => b.glovallScore - a.glovallScore).slice(0, 5);
 
   const nextShowcase = SHOWCASE_EVENTS.find((e) => e.status === 'upcoming') || SHOWCASE_EVENTS[0];
@@ -76,7 +90,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
       <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-xs border border-slate-200/80 flex flex-col xl:flex-row xl:items-center justify-between gap-5">
         {/* Academy Brand & Meta */}
         <div className="flex items-center gap-4 min-w-0">
-          <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-linear-to-br from-blue-600 to-indigo-700 text-white font-black text-2xl flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0 border border-blue-400/20">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-linear-to-br from-blue-600 to-indigo-700 text-white font-black text-2xl flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0 border border-blue-400/20">
             ⚾
           </div>
 
@@ -87,18 +101,18 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
               </h1>
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase tracking-wide">
                 <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                <span>Verified Hub</span>
+                <span>Verified Hub MLB</span>
               </span>
             </div>
 
             <div className="flex flex-wrap items-center gap-y-1 gap-x-2 text-xs text-slate-500 font-medium">
               <span className="inline-flex items-center gap-1 text-slate-600">
                 <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                <span>{academy.city}</span>
+                <span>{academy.city}, {academy.country || 'República Dominicana'}</span>
               </span>
               <span className="text-slate-300 hidden sm:inline">•</span>
               <span className="text-slate-600">
-                Administrador de academia: <strong className="text-slate-900 font-bold">{academy.directorName}</strong>
+                Administrador: <strong className="text-slate-900 font-bold">{academy.directorName}</strong>
               </span>
             </div>
           </div>
@@ -108,35 +122,45 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
         <div className="grid grid-cols-2 sm:flex sm:items-center sm:flex-wrap gap-2 shrink-0">
           <button
             onClick={() => onNavigateTab('roster')}
-            className="px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-indigo-700 border border-slate-200/80 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-98"
+            className="px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-indigo-700 border border-slate-200/80 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-98"
             title="Explorar el Directorio Global de Jugadores"
           >
-            <Globe className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-            <span className="truncate">Directorio</span>
+            <Users className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+            <span className="truncate">Roster 360°</span>
+          </button>
+
+          <button
+            onClick={() => onNavigateTab('studio-assignments')}
+            className="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-98"
+            title="Asignar Biblioteca, Savant y Tests IQ"
+          >
+            <Brain className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+            <span className="truncate">Studio Asignaciones</span>
+          </button>
+
+          <button
+            onClick={() => onNavigateTab('studio-tracking')}
+            className="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-98"
+            title="Mirada 360° del Estudio"
+          >
+            <Eye className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+            <span className="truncate">Mirada 360°</span>
           </button>
 
           <button
             onClick={() => onNavigateTab('coaches')}
-            className="px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-blue-700 border border-slate-200/80 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-98"
-            title="Directorio Global de Entrenadores"
+            className="px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-blue-700 border border-slate-200/80 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-98"
+            title="Staff de Entrenadores"
           >
             <UserPlus className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-            <span className="truncate">+ Vincular Staff</span>
-          </button>
-
-          <button
-            onClick={() => onNavigateTab('showcases')}
-            className="px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200/80 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-98"
-          >
-            <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span className="truncate">Showcases</span>
+            <span className="truncate">Staff Técnico</span>
           </button>
 
           <button
             onClick={() => onNavigateTab('scout-book')}
-            className="px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs inline-flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer active:scale-98"
+            className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs inline-flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer active:scale-98"
           >
-            <FileText className="w-3.5 h-3.5 text-indigo-200 shrink-0" />
+            <FileText className="w-3.5 h-3.5 text-amber-100 shrink-0" />
             <span className="truncate">Scout Book (PDF)</span>
           </button>
         </div>
@@ -158,64 +182,159 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
               <span className="text-xl sm:text-2xl font-black text-slate-900">{players.length}</span>
               <span className="text-[11px] text-slate-400 font-medium">/ 25 cupos</span>
             </div>
+            <p className="text-[10px] text-blue-600 font-bold mt-0.5">100% Monitoreados 360°</p>
           </div>
         </div>
 
-        {/* KPI 2: Staff Técnico & Red */}
-        <div
-          onClick={() => onNavigateTab('coaches')}
-          className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-emerald-300 transition-all"
-        >
-          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black shrink-0">
-            <UserCheck className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Staff de Entrenadores</p>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="text-xl sm:text-2xl font-black text-emerald-700">{activeStaffCount}</span>
-              <span className="text-[11px] text-emerald-600 font-bold">Activos</span>
-            </div>
-          </div>
-        </div>
-
-        {/* KPI 3: Solicitudes de Vinculación a Prospectos */}
+        {/* KPI 2: Rendimiento Global Glovall Score */}
         <div
           onClick={() => onNavigateTab('roster')}
-          className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-amber-300 transition-all"
+          className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-indigo-300 transition-all"
         >
-          <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-black shrink-0">
-            <Mail className="w-5 h-5" />
+          <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black shrink-0">
+            <Flame className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Convenios con Tutores</p>
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Score Promedio Equipo</p>
             <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="text-xl sm:text-2xl font-black text-amber-700">{pendingInvitations.length}</span>
-              <span className="text-[11px] text-amber-600 font-bold">En Revisión</span>
+              <span className="text-xl sm:text-2xl font-black text-indigo-900">{avgGlovallScore}</span>
+              <span className="text-[11px] text-indigo-600 font-bold">/ 100 pts</span>
             </div>
+            <p className="text-[10px] text-emerald-600 font-bold mt-0.5">Top 5% Academias Caribe</p>
+          </div>
+        </div>
+
+        {/* KPI 3: Studio & Baseball IQ */}
+        <div
+          onClick={() => onNavigateTab('studio-tracking')}
+          className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-purple-300 transition-all"
+        >
+          <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-black shrink-0">
+            <Brain className="w-5 h-5 text-purple-600" />
+          </div>
+          <div>
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Baseball IQ del Roster</p>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="text-xl sm:text-2xl font-black text-purple-900">{avgBaseballIq}%</span>
+              <span className="text-[11px] text-purple-600 font-bold">Acierto</span>
+            </div>
+            <p className="text-[10px] text-purple-700 font-medium mt-0.5">{totalStudyHours} hrs de estudio</p>
           </div>
         </div>
 
         {/* KPI 4: Cumplimiento Tutor Legal */}
         <div
           onClick={() => onNavigateTab('roster')}
-          className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-purple-300 transition-all"
+          className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-emerald-300 transition-all"
         >
-          <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-black shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Elegibilidad Legal MLB</p>
             <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="text-xl sm:text-2xl font-black text-purple-700">
+              <span className="text-xl sm:text-2xl font-black text-emerald-800">
                 {tutorCompliancePercent}%
               </span>
               <span className="text-[11px] text-slate-400 font-medium">({verifiedTutorCount}/{players.length})</span>
+            </div>
+            <p className="text-[10px] text-emerald-600 font-bold mt-0.5">Tutores Verificados</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. STUDIO & ACADEMIC CONTROL CENTER (HIGHLIGHT SECTION) */}
+      <div className="bg-linear-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 text-white shadow-xl border border-indigo-500/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-black text-white tracking-tight flex items-center gap-2">
+                  <span>Centro de Control Studio & Aprendizaje Deportivo</span>
+                  <span className="px-2 py-0.5 rounded-full bg-blue-500/30 text-blue-300 text-[10px] font-bold">
+                    EdTech Activo
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Control centralizado de Biblioteca, Savant, Evaluaciones de Baseball IQ y Horas de Estudio de los prospectos.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => onNavigateTab('studio-assignments')}
+                className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-blue-500/20 cursor-pointer"
+              >
+                <Brain className="w-3.5 h-3.5" />
+                <span>Asignar Contenidos & Tests</span>
+              </button>
+              <button
+                onClick={() => onNavigateTab('studio-tracking')}
+                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-all border border-white/20 cursor-pointer"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Bitácora 360°</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Studio Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                  Baseball IQ Evaluados
+                </span>
+                <Brain className="w-4 h-4 text-purple-400" />
+              </div>
+              <div className="text-2xl font-black text-white mt-1">
+                {players.filter(p => (p.edTech?.baseballIqScore || 0) > 0).length} / {players.length}
+              </div>
+              <p className="text-[11px] text-purple-300 font-medium mt-0.5">
+                Promedio {avgBaseballIq}% en toma de decisiones
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                  Biblioteca & Cursos
+                </span>
+                <BookOpen className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div className="text-2xl font-black text-white mt-1">
+                22 Atletas
+              </div>
+              <p className="text-[11px] text-emerald-300 font-medium mt-0.5">
+                Acceso activo a podcast y análisis MLB
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                  Savant & TrackMan
+                </span>
+                <Activity className="w-4 h-4 text-blue-400" />
+              </div>
+              <div className="text-2xl font-black text-white mt-1">
+                19 Prospectos
+              </div>
+              <p className="text-[11px] text-blue-300 font-medium mt-0.5">
+                Telemetría de swing y pitcheo sincronizada
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3. CORE STRATEGIC COLUMNS */}
+      {/* 4. CORE STRATEGIC COLUMNS */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Próximo Evento & Distribución de Clases */}
         <div className="space-y-6">
@@ -247,8 +366,8 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   <span className="font-black text-emerald-700">{nextShowcase.confirmedScoutsCount || 18} Organizaciones</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Atletas Caribe Inscritos:</span>
-                  <span className="font-black text-blue-700">4 Prospectos</span>
+                  <span className="text-slate-500 font-medium">Atletas Inscritos:</span>
+                  <span className="font-black text-blue-700">{class2026.length} Prospectos (Clase 2026)</span>
                 </div>
               </div>
 
@@ -388,7 +507,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
         </div>
       </div>
 
-      {/* 4. STAFF TÉCNICO & SUSCRIPCIÓN INSTITUCIONAL */}
+      {/* 5. STAFF TÉCNICO & SUSCRIPCIÓN INSTITUCIONAL */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Cobertura del Staff Técnico */}
         <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-xs border border-slate-200/80 space-y-4">

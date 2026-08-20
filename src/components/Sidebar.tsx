@@ -297,7 +297,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* B. ENTRENADOR / PREPARADOR FÍSICO (STAFF) SIDEBAR MENU */}
+          {/* B. ENTRENADOR / COACH PROFESIONAL (STAFF) SIDEBAR MENU */}
           {/* ======================================================== */}
           {activeRole === 'staff' && (
             <>
@@ -306,18 +306,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={() => handleNavClick('staff-dashboard')}
                   className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-all ${
                     currentTab === 'staff-dashboard' || currentTab === 'dashboard'
-                      ? 'bg-blue-50 text-blue-600 shadow-xs'
+                      ? 'bg-blue-50 text-blue-600 shadow-xs font-bold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
-                  <Home className="w-5 h-5" />
-                  <span>Dashboard de Entrenamiento</span>
+                  <Award className="w-5 h-5 text-blue-600" />
+                  <span>Perfil & Trayectoria</span>
                 </button>
               </div>
 
               <div className="space-y-1">
                 <span className="px-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  Desarrollo Técnico
+                  Desarrollo de Atletas
                 </span>
 
                 <button
@@ -330,10 +330,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   <div className="flex items-center gap-3">
                     <Users className="w-4 h-4 text-indigo-600" />
-                    <span>Roster & Vista 360°</span>
+                    <span>Mis Atletas en Roster</span>
                   </div>
                   <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold">
-                    Mis Atletas
+                    Vista 360°
                   </span>
                 </button>
 
@@ -348,23 +348,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <Video className="w-4 h-4 text-purple-600" />
                   <span>Videoanálisis Biomecánico</span>
                 </button>
+              </div>
+
+              <div className="space-y-1">
+                <span className="px-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Eventos & Combines
+                </span>
 
                 <button
-                  onClick={() => handleNavClick('coaches')}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                    currentTab === 'coaches'
-                      ? 'bg-blue-50 text-blue-600 font-bold'
+                  onClick={() => handleNavClick('showcases')}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                    currentTab === 'showcases'
+                      ? 'bg-emerald-50 text-emerald-700 font-semibold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
-                  <UserCheck className="w-4 h-4 text-blue-600" />
-                  <span>Equipo de Entrenadores</span>
+                  <Calendar className="w-4 h-4 text-emerald-600" />
+                  <span>Showcases & Tryouts MLB</span>
                 </button>
               </div>
 
               <div className="space-y-1">
                 <span className="px-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  EdTech & Studio
+                  Studio Deportivo
                 </span>
 
                 <button
@@ -382,7 +388,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-black ${
                     currentTab === 'studio-assignments' || currentTab === 'assignments' ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-800'
                   }`}>
-                    Checks & IQ
+                    IQ & Tests
                   </span>
                 </button>
 
@@ -396,30 +402,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   <div className="flex items-center gap-3">
                     <Eye className={`w-4 h-4 ${currentTab === 'studio-tracking' ? 'text-white' : 'text-indigo-600'}`} />
-                    <span>Mirada 360° Estudio</span>
+                    <span>Bitácora 360° Estudio</span>
                   </div>
                   <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-black ${
                     currentTab === 'studio-tracking' ? 'bg-white/20 text-white' : 'bg-indigo-100 text-indigo-800'
                   }`}>
                     360°
                   </span>
-                </button>
-              </div>
-
-              <div className="space-y-1 pt-2 border-t border-slate-100">
-                <span className="px-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  Eventos
-                </span>
-                <button
-                  onClick={() => handleNavClick('showcases')}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-medium transition-all ${
-                    currentTab === 'showcases'
-                      ? 'bg-blue-50 text-blue-600 font-semibold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  <Calendar className="w-4 h-4 text-slate-600" />
-                  <span>Calendario de Combines</span>
                 </button>
               </div>
             </>
